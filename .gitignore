@@ -1,0 +1,6 @@
+/.settings
+/build
+/.classpath
+/.project
+/src/LoginTest.java
+/src/connection_check.java

@@ -2,9 +2,6 @@ package com.myapp.profile;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-
-
-
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
@@ -12,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.mail.Session;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,25 +19,7 @@ import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import org.apache.commons.io.IOUtils;
-
 import com.myapp.entity.FollowEntity;
 import com.myapp.entity.FriendRequestEntity;
 import com.myapp.entity.ProfileEntity;
@@ -50,10 +28,6 @@ import com.myapp.repository.AddFriendFollow;
 import com.myapp.repository.ProfileRepository;
 import com.myapp.repository.UserRepository;
 import com.myapp.repository.WallRepository;
-
-
-
-
 
 /**
  * Servlet implementation class Profile
@@ -122,19 +96,10 @@ public class Profile extends HttpServlet {
 			}
 			else{
 				try {
-					/*String pathInfo = request.getPathInfo();
-				String path = request.getRequestURI().substring(request.getContextPath().length());
-				System.out.println(pathInfo);
-				String[] parts=pathInfo.split("/");
-				String part2=parts[1];
-				System.out.println(part2);*/
 					String user=request.getParameter("user");
 					ProfileEntity entity=this.profile_db.findProfileByUsername(user);
-					//System.out.println(request.getSession().getAttribute("user"));
-					//System.out.println(entity);
 					if(entity.getUser_email()!=null){
 						String session_user=(String)request.getSession().getAttribute("user");
-						//System.out.println("erhjvjhvhherer");
 						FriendRequestEntity friend_entity=this.friend_db.getFriendRequestDetails(session_user,entity.getUser_email());
 						FollowEntity follow_entity=this.friend_db.getFollowerDetails(session_user,entity.getUser_email());
 						List<HashMap<String,Object>> status_entity=this.wall_db.getStatusDetails(entity.getUser_email());
@@ -142,7 +107,6 @@ public class Profile extends HttpServlet {
 						friend_map.put("friend1", session_user);
 						friend_map.put("friend2", entity.getUser_email());
 						Boolean isFriend=this.friend_db.getFriend(friend_map);
-						System.out.println(isFriend);
 						if(isFriend){
 							request.setAttribute("isFriend",true);
 						}
@@ -153,19 +117,9 @@ public class Profile extends HttpServlet {
 						request.setAttribute("friend_entity",friend_entity);
 						request.setAttribute("follow_entity",follow_entity);
 						request.setAttribute("status_entity",status_entity);
-						//String pathInfo = request.getPathInfo();
-						//System.out.println(path);
-						//request.setAttribute("pathinfo",pathInfo);
-						//Filter filter.doFilter(request, response);
 						request.getRequestDispatcher("Wall/wall.jsp").forward(request,response);
 					} else {
-
-						///System.out.println("ererer");
-						//ProfileEntity profile_entity=this.profile_db.findProfileByUsername(user);
-						//entity=profile_entity;
-						//request.setAttribute("entity",entity);
 						response.sendRedirect("Wall");
-						//request.getRequestDispatcher("Wall/wall.jsp").forward(request,response);
 					}
 
 
@@ -192,8 +146,6 @@ public class Profile extends HttpServlet {
 		else {
 			if(!("".equals(request.getParameter("full_name")))) {
 				try {
-					//String profile_pic=request.getParameter("profile_pic");
-
 					String full_name=request.getParameter("full_name");
 					String username=request.getParameter("username");
 					String dob=request.getParameter("dob");
@@ -211,7 +163,6 @@ public class Profile extends HttpServlet {
 
 						// obtains input stream of the upload file
 						inputStream = filePart.getInputStream();
-						//System.out.println(inputStream);
 					}
 					HttpSession session=request.getSession();
 					String email=(String)session.getAttribute("user");
@@ -227,23 +178,10 @@ public class Profile extends HttpServlet {
 					profile_data.put("interest", interest);
 					profile_data.put("experience", experience);
 					this.profile_db.createProfile(profile_data,inputStream);
-					//System.out.println(profile_pic);
 					this.user_db.updateProfile(email);
 
 					ProfileEntity entity=this.profile_db.findProfileByEmail(email);
-					//System.out.println(entity.getPicture());
-					//InputStream picture=(InputStream)entity.getPicture();
-					//byte[] bytes = IOUtils.toByteArray(picture);
-					//String s = new String(bytes,StandardCharsets.UTF_8); // Or any encoding.
-					//BufferedInputStream decoded_picture = new BufferedInputStream(picture);
-					//response.sendRedirect("Profile/profile.jsp");
-					//System.out.println(s);
-					//response.sendRedirect("Wall/wall.jsp");
 					request.setAttribute("entity",entity);
-					//String pathInfo = request.getPathInfo();
-					//System.out.println(pathInfo);
-					//request.setAttribute("pathinfo",pathInfo);
-					//System.out.println(entity.getUsername());
 					RequestDispatcher profile=request.getRequestDispatcher("Wall/wall.jsp");
 					profile.forward(request, response);
 				}catch(Exception e) {
